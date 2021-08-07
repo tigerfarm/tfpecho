@@ -1,8 +1,8 @@
 var request = require('request');
 var basicAuth = "Basic " + Buffer.from("dave" + ":" + "password").toString("base64");
 // var theRequestUrl = "http://localhost:8000/2010-04-01/Accounts/123456/Messages." + "json";
-var theRequestUrl = 'http://localhost:8000/show';
-// var theRequestUrl = 'https://tfpecho.herokuapp.com/';
+// var theRequestUrl = 'http://localhost:8000/show';
+var theRequestUrl = 'https://tfpecho.herokuapp.com/';
 var theFormData = {
     From: "+16505551111",
     To: "+16505552222",
