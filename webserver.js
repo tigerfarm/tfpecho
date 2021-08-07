@@ -101,7 +101,7 @@ app.post('*', function (request, res) {
             // 
             // +16505551111
             // ----------------------------116322498282777310313542
-            // console.log("+ theData :" + theData + ":");
+            console.log("+ theData :" + theData + ":");
             var thePairs = theData.split("Content-Disposition: form-data; name=");
             theLength = thePairs.length;
             for (var i = 1; i < theLength; i++) {
