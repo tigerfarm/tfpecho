@@ -95,19 +95,31 @@ app.post('*', function (request, res) {
         theData += data;
     });
     request.on('end', function () {
-        // Content-Disposition: form-data; name="From"
-        // 
-        // +16505551111
-        // ----------------------------116322498282777310313542
-        console.log("+ theData :" + theData + ":");
-        var thePairs = theData.split("Content-Disposition: form-data; name=");
-        theLength = thePairs.length;
-        for (var i = 1; i < theLength; i++) {
-            aPair = thePairs[i];
-            es = aPair.indexOf("\"", 1);
-            ls = aPair.indexOf("------", 1);
-            // console.log('+ i = ' + i + " " + aPair);
-            console.log('+ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls-1));
+        if (theData.indexOf("Content-Disposition: form-data;") > 0) {
+            // "content-type":"multipart/form-data; ..."
+            // Content-Disposition: form-data; name="From"
+            // 
+            // +16505551111
+            // ----------------------------116322498282777310313542
+            // console.log("+ theData :" + theData + ":");
+            var thePairs = theData.split("Content-Disposition: form-data; name=");
+            theLength = thePairs.length;
+            for (var i = 1; i < theLength; i++) {
+                aPair = thePairs[i];
+                es = aPair.indexOf("\"", 1);
+                ls = aPair.indexOf("------", 1);
+                // console.log('+ i = ' + i + " " + aPair);
+                console.log('+ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1));
+            }
+        } else {
+            // + theData :Identity=davea&Body=Hello 17&Title=Dave here&sound=Moto:
+            console.log("+ theData :" + theData + ":");
+            var thePairs = theData.split("&");
+            theLength = thePairs.length;
+            for (var i = 0; i < theLength; i++) {
+                aPair = thePairs[i].split("=");
+                console.log('+ ' + aPair[0] + ': ' + aPair[1]);
+            }
         }
     });
     res.statusCode = 201;
