@@ -1,0 +1,8 @@
+{
+  "name": "Echo HTTP requests",
+  "description": "Web Server Application to echo HTTP request information.",
+  "repository": "https://github.com/tigerfarm/tfpecho",
+  "logo": "http://tigerfarmpress.com/images/topImgLeft.jpg",
+  "keywords": ["node", "express", "heroku", "http", "request"],
+    "env": {}
+}
