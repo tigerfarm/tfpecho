@@ -23,7 +23,7 @@ function sayMessage(message) {
 // -----------------------------------------------------------------------------
 // 
 // $ npm install express --save
-const path = require('path');
+// const path = require('path');
 
 // $ npm install --save request
 const request = require('request');
@@ -99,12 +99,8 @@ app.post('*', function (request, res) {
         // 
         // +16505551111
         // ----------------------------116322498282777310313542
-        // console.log("+ theData :" + theData + ":");
+        console.log("+ theData :" + theData + ":");
         var thePairs = theData.split("Content-Disposition: form-data; name=");
-        // + i = 1 "From"
-        // 
-        // +16505551111
-        // ----------------------------912947162233207412208035
         theLength = thePairs.length;
         for (var i = 1; i < theLength; i++) {
             aPair = thePairs[i];
