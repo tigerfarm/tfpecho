@@ -23,19 +23,16 @@ function sayMessage(message) {
 // -----------------------------------------------------------------------------
 // 
 // $ npm install express --save
-// const path = require('path');
-
 // $ npm install --save request
 const request = require('request');
 const url = require("url");
+const express = require('express');
+var app = express();
+app.use(express.json());
 //
 // When deploying to Heroku, must use the keyword, "PORT".
 // This allows Heroku to override the value and use port 80. And when running locally can use other ports.
 const PORT = process.env.PORT || 8000;
-
-const express = require('express');
-var app = express();
-app.use(express.json());
 
 // -----------------------------------------------------------------------------
 // 
@@ -92,6 +89,7 @@ app.post('*', function (request, res) {
     console.log("---");
     let theData = "";
     request.on('data', function (data) {
+        console.log("++ data :"+ data + ":");
         theData += data;
     });
     request.on('end', function () {
