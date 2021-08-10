@@ -24,6 +24,9 @@ function sayMessage(message) {
 // 
 // $ npm install express --save
 // $ npm install --save request
+const fs = require("fs");
+var theFilename = 'docroot/httpReceive.txt';
+
 const request = require('request');
 const url = require("url");
 const express = require('express');
@@ -51,34 +54,8 @@ function echoHeaders(theHeaders) {
     }
 }
 // -----------------------------------------------------------------------------
-// Echo the request.
+// Echo the POST request.
 
-var theUrl = '';
-var theQueryString = '';
-app.get('*', function (request, res, next) {
-    //
-    console.log("------------------");
-    // console.log(">" + JSON.stringify(request.headers) + "<");
-    var theHeaders = JSON.stringify(request.headers).split('","');
-    console.log("+ GET HTTP headers, count = " + theHeaders.length + ":");
-    echoHeaders(theHeaders);
-    //
-    console.log("---");
-    theUrl = url.parse(request.url).pathname;
-    theQueryString = url.parse(request.url).query;
-    theQueryStringJson = JSON.stringify(theQueryString);
-    if (theQueryStringJson !== null) {
-        theQueryString = theQueryStringJson;
-    }
-    var urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
-    console.log(urlComponentMessage);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show GET.');
-    // next();
-});
-
-// -----------------------------------------------------------------------------
 app.post('*', function (request, res) {
     //
     console.log("------------------");
@@ -89,7 +66,7 @@ app.post('*', function (request, res) {
     console.log("---");
     let theData = "";
     request.on('data', function (data) {
-        console.log("++ data :"+ data + ":");
+        // console.log("++ data :"+ data + ":");
         theData += data;
     });
     request.on('end', function () {
@@ -126,8 +103,69 @@ app.post('*', function (request, res) {
 });
 
 // -----------------------------------------------------------------------------
+// Echo the GET request.
+
+var theUrl = '';
+var theQueryString = '';
+app.get('*', function (request, res, next) {
+    //
+    console.log("------------------");
+    // console.log(">" + JSON.stringify(request.headers) + "<");
+    var theHeaders = JSON.stringify(request.headers).split('","');
+    console.log("+ GET HTTP headers, count = " + theHeaders.length + ":");
+    echoHeaders(theHeaders);
+    //
+    console.log("---");
+    theUrl = url.parse(request.url).pathname;
+    theQueryString = url.parse(request.url).query;
+    theQueryStringJson = JSON.stringify(theQueryString);
+    if (theQueryStringJson !== null) {
+        theQueryString = theQueryStringJson;
+    }
+    var urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
+    console.log(urlComponentMessage);
+    if (theUrl !== '/read') {
+        fs.writeFile(theFilename, urlComponentMessage, err => {
+            if (err) {
+                console.error("- Write error: " + err);
+            } else {
+                console.log("+ Wrote URL components to: " + theFilename);
+            }
+        });
+    }
+    // res.statusCode = 200;
+    // res.setHeader('Content-Type', 'text/plain');
+    // res.send('+ Show GET.');
+    next();
+});
+
+// -----------------------------------------------------------------------------
+// app.get('/', function (req, res) {
+//    res.send('+ Home URI.');
+// });
 app.get('/hello', function (req, res) {
     res.send('+ hello there.');
+});
+app.get('/show', function (req, res) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('+ Show GET.');
+});
+
+app.get('/read', function (req, res) {
+    fs.readFile(theFilename, function (err, data) {
+        if (err) {
+            console.log("- Error: read file NOT found.");
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.send('- Error: read file NOT found.');
+        } else {
+            // console.log(data.toString());
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.send('+ File content:\n\r' + data.toString());
+        }
+    });
 });
 // -----------------------------------------------------------------------------
 app.use(express.static('docroot'));
