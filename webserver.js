@@ -161,13 +161,28 @@ app.get('*', function (request, res, next) {
     console.log("---");
     theUrl = url.parse(request.url).pathname;
     theQueryString = url.parse(request.url).query;
-    theQueryStringJson = JSON.stringify(theQueryString);
-    if (theQueryStringJson !== null) {
-        theQueryString = theQueryStringJson;
+    var thePairMessages = '';
+    var urlComponentMessage = '';
+    if (theQueryString === null) {
+        urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl;
+    } else {
+        urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
+        var thePairs = theQueryString.split("&");
+        var theLength = thePairs.length;
+        for (var i = 0; i < theLength; i++) {
+            aPair = thePairs[i].split("=");
+            thePairMessage = '++ ' + aPair[0] + ': ' + aPair[1];
+            console.log(thePairMessage);
+            thePairMessages = thePairMessages + thePairMessage + "\n";
+        }
     }
-    var urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
     console.log(urlComponentMessage);
-    sendChatMessage(urlComponentMessage);
+    sendChatMessage(
+            '------------------------------------------------------\n'
+            + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
+            + '+ GET content name-value pairs : \n' + thePairMessages
+            + '--------------\n'
+            );
     if (theUrl !== '/read') {
         fs.writeFile(theFilename, urlComponentMessage, err => {
             if (err) {
