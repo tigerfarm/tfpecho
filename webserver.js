@@ -64,18 +64,25 @@ function sendChatMessage(theMessage) {
 // -----------------------------------------------------------------------------
 // 
 function echoHeaders(theHeaders) {
-    theLength = theHeaders.length;
+    var theLength = theHeaders.length;
+    var headerlist = '';
     for (var i = 0; i < theLength; i++) {
-        theHeaderString = theHeaders[i];
+        var theHeaderString = theHeaders[i];
+        var aMessage = '';
         // console.log('+ i = ' + i + " " + theHeaderString);
         if (i === 0) {
-            console.log('++ ' + i + ": " + theHeaderString.substring(1, theHeaderString.length) + '"');
+            aMessage = '++ ' + i + ": " + theHeaderString.substring(1, theHeaderString.length) + '"';
+            console.log(aMessage);
         } else if (i === (theLength - 1)) {
-            console.log('++ ' + i + ": \"" + theHeaderString.substring(0, theHeaderString.length - 1));
+            aMessage = '++ ' + i + ": \"" + theHeaderString.substring(0, theHeaderString.length - 1);
+            console.log(aMessage);
         } else {
-            console.log('++ ' + i + ": \"" + theHeaderString + '"');
+            aMessage = '++ ' + i + ": \"" + theHeaderString + '"';
+            console.log(aMessage);
         }
+        headerlist = headerlist + aMessage + "\n";
     }
+    return(headerlist);
 }
 // -----------------------------------------------------------------------------
 // Echo the POST request.
@@ -85,7 +92,7 @@ app.post('*', function (request, res) {
     console.log("------------------");
     var theHeaders = JSON.stringify(request.headers).split('","');
     console.log("+ POST HTTP headers, count = " + theHeaders.length + ":");
-    echoHeaders(theHeaders);
+    theHeaders = echoHeaders(theHeaders);
     //
     console.log("---");
     let theData = "";
@@ -94,7 +101,7 @@ app.post('*', function (request, res) {
         theData += data;
     });
     request.on('end', function () {
-        var thePairMessages = '+ URL components : ' + request.method + ' ' + url.parse(request.url).pathname + "\n";
+        var thePairMessages = '';
         if (theData.indexOf("Content-Disposition: form-data;") > 0) {
             // "content-type":"multipart/form-data; ..."
             // Content-Disposition: form-data; name="From"
@@ -109,9 +116,9 @@ app.post('*', function (request, res) {
                 es = aPair.indexOf("\"", 1);
                 ls = aPair.indexOf("------", 1);
                 // console.log('+ i = ' + i + " " + aPair);
-                thePairMessage = '+ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1);
-                thePairMessages = thePairMessages + thePairMessage + "\n";
+                thePairMessage = '++ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1);
                 console.log(thePairMessage);
+                thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         } else {
             // + theData :Identity=davea&Body=Hello 17&Title=Dave here&sound=Moto:
@@ -120,12 +127,18 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '+ ' + aPair[0] + ': ' + aPair[1];
-                thePairMessages = thePairMessages + thePairMessage + "\n";
+                thePairMessage = '++ ' + aPair[0] + ': ' + aPair[1];
                 console.log(thePairMessage);
+                thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         }
-        sendChatMessage(thePairMessages);
+        sendChatMessage(
+                '------------------------------------------------------\n'
+                + '+ URL components : ' + request.method + ' ' + url.parse(request.url).pathname + "\n"
+                + '+ Headers : \n' + theHeaders
+                + '+ POST content : \n' + thePairMessages
+                + '--------------\n'
+                );
     });
     res.statusCode = 201;
     res.setHeader('Content-Type', 'text/plain');
