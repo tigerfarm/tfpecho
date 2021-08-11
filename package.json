@@ -1,5 +1,5 @@
 {
-  "name": "tfpconversations",
+  "name": "tfpecho",
   "version": "1.0.1",
   "description": "Node.js Express web application to echo HTTP request information.",
   "engines": {
@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "fs": "^0.0.1-security",
     "request": "^2.88.2",
+    "twilio": "^3.66.1",
     "url": "^0.11.0"
   },
   "repository": {

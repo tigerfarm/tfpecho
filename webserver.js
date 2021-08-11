@@ -1,9 +1,13 @@
 // -----------------------------------------------------------------------------
-// Chat web server
+// Conversations Chat web server application
 // 
 // Easy to use.
 // Install modules.
 //  $ npm install --save express
+//  $ npm install --save express
+//  $ npm install --save request
+//  $ npm install --save fs
+//  $ npm install --save twilio
 //  
 // Run the web server. Default port is hardcoded to 8000.
 //  $ node websever.js
@@ -22,8 +26,6 @@ function sayMessage(message) {
 // Web server interface to call functions.
 // -----------------------------------------------------------------------------
 // 
-// $ npm install express --save
-// $ npm install --save request
 const fs = require("fs");
 var theFilename = 'docroot/httpReceive.txt';
 
@@ -33,9 +35,31 @@ const express = require('express');
 var app = express();
 app.use(express.json());
 //
+const client = require('twilio')(process.env.CONVERSATIONS_ACCOUNT_SID, process.env.CONVERSATIONS_ACCOUNT_AUTH_TOKEN);
+const conversationSid = process.env.CONVERSATIONS_ECHO_SID;
+const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
+
+// -----------------------------------------------------------------------------
 // When deploying to Heroku, must use the keyword, "PORT".
 // This allows Heroku to override the value and use port 80. And when running locally can use other ports.
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
+
+// -----------------------------------------------------------------------------
+// Send a Conversations chat message that a client can monitor.
+
+function sendChatMessage(theMessage) {
+    console.log("++ Create a text message for a Conversation.");
+    console.log("+ Conversation SID: " + conversationSid
+            + " Participant Identity: " + participantIdentity
+            + " messageText: " + theMessage
+            );
+    client.conversations.conversations(conversationSid)
+            .messages
+            .create({author: participantIdentity, body: theMessage})
+            .then(message => console.log(
+                        "+ Created message, SID: " + message.sid
+                        ));
+}
 
 // -----------------------------------------------------------------------------
 // 
@@ -70,6 +94,7 @@ app.post('*', function (request, res) {
         theData += data;
     });
     request.on('end', function () {
+        var thePairMessages = '+ URL components : ' + request.method + ' ' + url.parse(request.url).pathname + "\n";
         if (theData.indexOf("Content-Disposition: form-data;") > 0) {
             // "content-type":"multipart/form-data; ..."
             // Content-Disposition: form-data; name="From"
@@ -84,7 +109,9 @@ app.post('*', function (request, res) {
                 es = aPair.indexOf("\"", 1);
                 ls = aPair.indexOf("------", 1);
                 // console.log('+ i = ' + i + " " + aPair);
-                console.log('+ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1));
+                thePairMessage = '+ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1);
+                thePairMessages = thePairMessages + thePairMessage + "\n";
+                console.log(thePairMessage);
             }
         } else {
             // + theData :Identity=davea&Body=Hello 17&Title=Dave here&sound=Moto:
@@ -93,9 +120,12 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                console.log('+ ' + aPair[0] + ': ' + aPair[1]);
+                thePairMessage = '+ ' + aPair[0] + ': ' + aPair[1];
+                thePairMessages = thePairMessages + thePairMessage + "\n";
+                console.log(thePairMessage);
             }
         }
+        sendChatMessage(thePairMessages);
     });
     res.statusCode = 201;
     res.setHeader('Content-Type', 'text/plain');
@@ -124,6 +154,7 @@ app.get('*', function (request, res, next) {
     }
     var urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
     console.log(urlComponentMessage);
+    sendChatMessage(urlComponentMessage);
     if (theUrl !== '/read') {
         fs.writeFile(theFilename, urlComponentMessage, err => {
             if (err) {
@@ -150,6 +181,13 @@ app.get('/show', function (req, res) {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.send('+ Show GET.');
+});
+app.get('/send', function (req, res) {
+    var theMessage = "+ From tpfecho.";
+    sendChatMessage(theMessage);
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('+ Sent message: ' + theMessage);
 });
 
 app.get('/read', function (req, res) {
