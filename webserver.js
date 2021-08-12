@@ -64,6 +64,8 @@ function sendChatMessage(theMessage) {
 
 // -----------------------------------------------------------------------------
 // 
+var requestHost = "";
+
 function echoHeaders(theHeaders) {
     var theLength = theHeaders.length;
     var headerlist = '';
@@ -82,6 +84,13 @@ function echoHeaders(theHeaders) {
             console.log(aMessage);
         }
         headerlist = headerlist + aMessage + "\n";
+        //
+        // Set the host variable.
+        // ++ 0: "host":"02b26d8de5bd.ngrok.io"
+        var hi = theHeaderString.indexOf('host":"');
+        if (hi > 0) {
+            requestHost = theHeaderString.substring(hi + 'host":"'.length, theHeaderString.length);
+        }
     }
     return(headerlist);
 }
@@ -136,6 +145,7 @@ app.post('*', function (request, res) {
                 '------------------------------------------------------\n'
                 + '+ URL components : ' + request.method + ' ' + url.parse(request.url).pathname + "\n"
                 + '+ Headers : \n' + theHeaders
+                + '--------------\n'
                 + '+ POST content : \n' + thePairMessages
                 + '--------------\n'
                 );
@@ -156,7 +166,7 @@ app.get('*', function (request, res, next) {
     // console.log(">" + JSON.stringify(request.headers) + "<");
     var theHeaders = JSON.stringify(request.headers).split('","');
     console.log("+ GET HTTP headers, count = " + theHeaders.length + ":");
-    echoHeaders(theHeaders);
+    theHeaders = echoHeaders(theHeaders);
     //
     console.log("---");
     theUrl = url.parse(request.url).pathname;
@@ -180,6 +190,10 @@ app.get('*', function (request, res, next) {
     sendChatMessage(
             '------------------------------------------------------\n'
             + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
+            + '+ Headers : \n' + theHeaders + "\n"
+            + '--------------\n'
+            + '+ GET URL : https://' + requestHost + theUrl + "?" + theQueryString + "\n"
+            + '--------------\n'
             + '+ GET content name-value pairs : \n' + thePairMessages
             + '--------------\n'
             );
