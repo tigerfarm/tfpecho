@@ -102,13 +102,13 @@ app.post('*', function (request, res) {
     });
     request.on('end', function () {
         var thePairMessages = '';
+        console.log("+ theData :" + theData + ":");
         if (theData.indexOf("Content-Disposition: form-data;") > 0) {
             // "content-type":"multipart/form-data; ..."
             // Content-Disposition: form-data; name="From"
             // 
             // +16505551111
             // ----------------------------116322498282777310313542
-            console.log("+ theData :" + theData + ":");
             var thePairs = theData.split("Content-Disposition: form-data; name=");
             theLength = thePairs.length;
             for (var i = 1; i < theLength; i++) {
@@ -122,7 +122,6 @@ app.post('*', function (request, res) {
             }
         } else {
             // + theData :Identity=davea&Body=Hello%2017&Title=Dave%20here&sound=Moto:
-            console.log("+ theData :" + theData + ":");
             var thePairs = theData.split("&");
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
@@ -142,7 +141,7 @@ app.post('*', function (request, res) {
     });
     res.statusCode = 201;
     res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show POST.');
+    res.send('+ Show POST.\n');
 });
 
 // -----------------------------------------------------------------------------
@@ -199,6 +198,8 @@ app.get('*', function (request, res, next) {
 });
 
 // -----------------------------------------------------------------------------
+// Process GET requests such as requests from a browser.
+// 
 // app.get('/', function (req, res) {
 //    res.send('+ Home URI.');
 // });
@@ -208,7 +209,12 @@ app.get('/hello', function (req, res) {
 app.get('/show', function (req, res) {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show GET.');
+    res.send('+ Show GET.\n');
+});
+app.get('/get', function (req, res) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('+ Show GET.\n');
 });
 app.get('/send', function (req, res) {
     var theMessage = "+ From tpfecho.";
@@ -217,7 +223,6 @@ app.get('/send', function (req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.send('+ Sent message: ' + theMessage);
 });
-
 app.get('/read', function (req, res) {
     fs.readFile(theFilename, function (err, data) {
         if (err) {
@@ -233,6 +238,7 @@ app.get('/read', function (req, res) {
         }
     });
 });
+
 // -----------------------------------------------------------------------------
 app.use(express.static('docroot'));
 app.use(function (err, req, res, next) {
