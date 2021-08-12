@@ -1,1 +1,1 @@
-+ URL components : GET /echo.txt ? abc=def&f1=p1%20p2
++ URL components : GET /get ? EventType=onMessageAdded&Attributes=%7B%7D&DateCreated=2021-08-11T17:30:55.860Z&Index=38&MessageSid=IM9d9dd049fd494746a24945dfbcc1ec5e&AccountSid=ACa---3&Source=SDK&ClientIdentity=dave2&RetryCount=0&Author=dave2&ParticipantSid=MBba977a9efe96481ca01c307812524d7e&Body=hi%20there&ConversationSid=CH6c25138e952448e3b27ef8164097a1c7

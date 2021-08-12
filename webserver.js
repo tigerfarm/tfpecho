@@ -44,6 +44,14 @@ const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
 // This allows Heroku to override the value and use port 80. And when running locally can use other ports.
 const PORT = process.env.PORT || 3000;
 
+
+function decodeString(theString) {
+    // Decode:
+    // + URL decode.
+    // + Replace '%3A' with ':'. Example, 2021-08-12T21%3A25%3A40.832Z to 2021-08-12T21:25:40.832Z
+    return(decodeURI(theString).replace('%3A', ':'));
+}
+
 // -----------------------------------------------------------------------------
 // Send a Conversations chat message that a client can monitor.
 
@@ -126,7 +134,7 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '++ ' + aPair[0] + ': ' + decodeURI(aPair[1]);
+                thePairMessage = '++ ' + aPair[0] + ': ' + decodeString(aPair[1]);
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
@@ -170,7 +178,7 @@ app.get('*', function (request, res, next) {
         var theLength = thePairs.length;
         for (var i = 0; i < theLength; i++) {
             aPair = thePairs[i].split("=");
-            thePairMessage = '++ ' + aPair[0] + ': ' + decodeURI(aPair[1]);
+            thePairMessage = '++ ' + aPair[0] + ': ' + decodeString(aPair[1]);
             console.log(thePairMessage);
             thePairMessages = thePairMessages + thePairMessage + "\n";
         }
