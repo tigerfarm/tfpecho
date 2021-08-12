@@ -105,7 +105,7 @@ app.post('*', function (request, res) {
     console.log("---");
     let theData = "";
     request.on('data', function (data) {
-        // console.log("++ data :"+ data + ":");
+        console.log("++ On data :"+ data + ":");
         theData += data;
     });
     request.on('end', function () {
