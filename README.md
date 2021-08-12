@@ -1,8 +1,6 @@
 # HTTP Web Application to HTTP Echo Request Information
 
 
-
-
 Sample Twilio Conversations HTTP request to my echo server.
 ````
 2021-08-10T18:00:58.254181+00:00 app[web.1]: + POST HTTP headers, count = 16:

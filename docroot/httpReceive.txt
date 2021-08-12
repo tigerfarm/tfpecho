@@ -1,1 +1,1 @@
-+ URL components : GET /this
++ URL components : GET /echo.txt ? abc=def&f1=p1%20p2

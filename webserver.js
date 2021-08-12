@@ -121,13 +121,13 @@ app.post('*', function (request, res) {
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         } else {
-            // + theData :Identity=davea&Body=Hello 17&Title=Dave here&sound=Moto:
+            // + theData :Identity=davea&Body=Hello%2017&Title=Dave%20here&sound=Moto:
             console.log("+ theData :" + theData + ":");
             var thePairs = theData.split("&");
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '++ ' + aPair[0] + ': ' + aPair[1];
+                thePairMessage = '++ ' + aPair[0] + ': ' + decodeURI(aPair[1]);
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
@@ -171,7 +171,7 @@ app.get('*', function (request, res, next) {
         var theLength = thePairs.length;
         for (var i = 0; i < theLength; i++) {
             aPair = thePairs[i].split("=");
-            thePairMessage = '++ ' + aPair[0] + ': ' + aPair[1];
+            thePairMessage = '++ ' + aPair[0] + ': ' + decodeURI(aPair[1]);
             console.log(thePairMessage);
             thePairMessages = thePairMessages + thePairMessage + "\n";
         }
