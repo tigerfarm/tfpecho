@@ -49,7 +49,7 @@ function decodeString(theString) {
     // Decode:
     // + URL decode.
     // + Replace '%3A' with ':'. Example, 2021-08-12T21%3A25%3A40.832Z to 2021-08-12T21:25:40.832Z
-    return(decodeURI(theString).replace('%3A', ':'));
+    return(decodeURI(theString).replaceAll('%3A', ':'));
 }
 
 // -----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ app.post('*', function (request, res) {
     console.log("---");
     let theData = "";
     request.on('data', function (data) {
-        console.log("++ On data :"+ data + ":");
+        console.log("++ On data :" + data + ":");
         theData += data;
     });
     request.on('end', function () {
