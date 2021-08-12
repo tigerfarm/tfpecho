@@ -49,7 +49,10 @@ function decodeString(theString) {
     // Decode:
     // + URL decode.
     // + Replace '%3A' with ':'. Example, 2021-08-12T21%3A25%3A40.832Z to 2021-08-12T21:25:40.832Z
-    return(decodeURI(theString).replaceAll('%3A', ':'));
+    var dString = decodeURI(theString);
+    dString.replaceAll('%3A', ':');
+    // return(decodeURI(theString).replaceAll('%3A', ':'));
+    return(dString);
 }
 
 // -----------------------------------------------------------------------------
