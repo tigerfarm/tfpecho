@@ -45,16 +45,6 @@ const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
 const PORT = process.env.PORT || 3000;
 
 
-function decodeString(theString) {
-    // Decode:
-    // + URL decode.
-    // + Replace '%3A' with ':'. Example, 2021-08-12T21%3A25%3A40.832Z to 2021-08-12T21:25:40.832Z
-    var dString = decodeURI(theString);
-    dString.replaceAll('%3A', ':');
-    // return(decodeURI(theString).replaceAll('%3A', ':'));
-    return(dString);
-}
-
 // -----------------------------------------------------------------------------
 // Send a Conversations chat message that a client can monitor.
 
@@ -137,7 +127,7 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '++ ' + aPair[0] + ': ' + decodeString(aPair[1]);
+                thePairMessage = '++ ' + aPair[0] + ': ' + decodeURIComponent(aPair[1]);
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
@@ -181,7 +171,7 @@ app.get('*', function (request, res, next) {
         var theLength = thePairs.length;
         for (var i = 0; i < theLength; i++) {
             aPair = thePairs[i].split("=");
-            thePairMessage = '++ ' + aPair[0] + ': ' + decodeString(aPair[1]);
+            thePairMessage = '++ ' + aPair[0] + ': ' + decodeURIComponent(aPair[1]);
             console.log(thePairMessage);
             thePairMessages = thePairMessages + thePairMessage + "\n";
         }
