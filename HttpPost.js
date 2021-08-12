@@ -4,8 +4,8 @@ var basicAuth = "Basic " + Buffer.from("dave" + ":" + "password").toString("base
 // To echo the form data, the URI needs to have a value such as "/show".
 
 // var theRequestUrl = "http://localhost:3000/2010-04-01/Accounts/123456/Messages." + "json";
-var theRequestUrl = 'http://localhost:3000/post';
-// var theRequestUrl = 'https://tfpecho.herokuapp.com/post';
+// var theRequestUrl = 'http://localhost:3000/post';
+var theRequestUrl = 'https://tfpecho.herokuapp.com/post';
 var theFormData = {
     From: "+16505551111",
     To: "+16505552222",
