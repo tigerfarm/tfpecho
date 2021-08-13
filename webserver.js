@@ -144,6 +144,8 @@ app.post('*', function (request, res) {
         sendChatMessage(
                 '------------------------------------------------------\n'
                 + '+ URL components : ' + request.method + ' ' + url.parse(request.url).pathname + "\n"
+                + '+ POST URL : https://' + requestHost + theUrl + "\n"
+                + '--------------\n'
                 + '+ Headers : \n' + theHeaders
                 + '--------------\n'
                 + '+ POST content : \n' + thePairMessages
