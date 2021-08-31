@@ -2,7 +2,7 @@
 
 Sample, use the curl command to send the following:
 ````
-curl -X POST https://tfpecho.herokuapp.com//Executions \
+curl -X POST https://echo.example.com/Executions \
 --data-urlencode "From=+16505551111" \
 --data-urlencode "To=+16505552222" \
 -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
@@ -11,26 +11,28 @@ That following will show up in the Conversations application, conversation ftpec
 ````
 + Ready
 > tfpecho : tfpecho : ------------------------------------------------------
-+ POST URL : https://tfpecho.herokuapp.com//Executions
++ POST URL : https://echo.example.com/Executions
 --------------
 + Headers : 
-++ 0: "host":"tfpecho.herokuapp.com"
+++ 0: "host":"echo.example.com"
 ++ 1: "connection":"close"
 ++ 2: "authorization":"Basic QUNYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWDp5b3VyX2F1dGhfdG9rZW4="
 ++ 3: "user-agent":"curl/7.64.1"
 ++ 4: "accept":"*/*"
 ++ 5: "content-type":"application/x-www-form-urlencoded"
-++ 6: "x-request-id":"7e3cdd72-ff4c-4a7d-82c2-f48f53abff8b"
+++ 6: "x-request-id":"e73e58f3-04eb-49e0-b03f-74b79d19bc9c"
 ++ 7: "x-forwarded-for":"107.22.192.239"
 ++ 8: "x-forwarded-proto":"https"
 ++ 9: "x-forwarded-port":"443"
 ++ 10: "via":"1.1 vegur"
-++ 11: "connect-time":"2"
-++ 12: "x-request-start":"1630372414626"
-++ 13: "total-route-time":"0"
+++ 11: "connect-time":"0"
+++ 12: "x-request-start":"1630373372709"
+++ 13: "total-route-time":"2"
 ++ 14: "content-length":"37"
 --------------
-+ POST content : 
++ POST content raw : 
+From=%2B16505551111&To=%2B16505552222
++ POST content name value pairs: 
 ++ From: +16505551111
 ++ To: +16505552222
 --------------
@@ -40,7 +42,7 @@ That following will show up in the Conversations application, conversation ftpec
 Sample Twilio Conversations HTTP request to my echo server.
 ````
 2021-08-10T18:00:58.254181+00:00 app[web.1]: + POST HTTP headers, count = 16:
-2021-08-10T18:00:58.254242+00:00 app[web.1]: ++ 0: "host":"tfpecho.herokuapp.com"
+2021-08-10T18:00:58.254242+00:00 app[web.1]: ++ 0: "host":"echo.example.com"
 2021-08-10T18:00:58.254330+00:00 app[web.1]: ++ 1: "connection":"close"
 2021-08-10T18:00:58.254404+00:00 app[web.1]: ++ 2: "content-type":"application/x-www-form-urlencoded; charset=utf-8"
 2021-08-10T18:00:58.254461+00:00 app[web.1]: ++ 3: "x-twilio-signature":"hm...w="
