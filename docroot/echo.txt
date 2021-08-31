@@ -1,3 +1,1 @@
-+++ Echo POST data.
-+ URL: /Users/dthurston/Projects/tighttp/docroot/echo.php f1=abc&f2=def 
-+ End of list.
+?- Hello there from tfpecho.

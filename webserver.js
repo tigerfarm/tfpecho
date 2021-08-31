@@ -49,10 +49,11 @@ const PORT = process.env.PORT || 3000;
 // Send a Conversations chat message that a client can monitor.
 
 function sendChatMessage(theMessage) {
+    var theSendMessage = '--------------------------------------------------------------------------------------\n' + theMessage;
     console.log("++ Create a text message for a Conversation.");
     console.log("+ Conversation SID: " + conversationSid
             + " Participant Identity: " + participantIdentity
-            + " messageText: " + theMessage
+            + " messageText: " + theSendMessage
             );
     client.conversations.conversations(conversationSid)
             .messages
@@ -60,6 +61,14 @@ function sendChatMessage(theMessage) {
             .then(message => console.log(
                         "+ Created message, SID: " + message.sid
                         ));
+    // Also, write the message to echo file.
+    fs.writeFile(theFilename, theSendMessage, err => {
+        if (err) {
+            console.error("- Write error: " + err);
+        } else {
+            console.log("+ Wrote URL components to: " + theFilename);
+        }
+    });
 }
 
 // -----------------------------------------------------------------------------
@@ -142,7 +151,6 @@ app.post('*', function (request, res) {
             }
         }
         sendChatMessage(
-                '------------------------------------------------------\n'
                 // + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
                 + '+ ' + request.method + ' URL : https://' + requestHost + url.parse(request.url).pathname + "\n"
                 + '--------------\n'
@@ -164,6 +172,13 @@ app.post('*', function (request, res) {
 var theUrl = '';
 var theQueryString = '';
 app.get('*', function (request, res, next) {
+    theUrl = url.parse(request.url).pathname;
+    if (theUrl.startsWith("/website") || theUrl === '/read') {
+        // Website files are for the browser, no need to echo the request data.
+        console.log("> website: " + theUrl);
+        next();
+        return;
+    }
     //
     console.log("------------------");
     // console.log(">" + JSON.stringify(request.headers) + "<");
@@ -172,7 +187,6 @@ app.get('*', function (request, res, next) {
     theHeaders = echoHeaders(theHeaders);
     //
     console.log("---");
-    theUrl = url.parse(request.url).pathname;
     theQueryString = url.parse(request.url).query;
     var thePairMessages = '';
     var urlComponentMessage = '';
@@ -191,7 +205,6 @@ app.get('*', function (request, res, next) {
     }
     console.log(urlComponentMessage);
     sendChatMessage(
-            '------------------------------------------------------\n'
             + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
             + '+ Headers : \n' + theHeaders + "\n"
             + '--------------\n'
@@ -200,19 +213,10 @@ app.get('*', function (request, res, next) {
             + '+ GET content name-value pairs : \n' + thePairMessages
             + '--------------\n'
             );
-    if (theUrl !== '/read') {
-        fs.writeFile(theFilename, urlComponentMessage, err => {
-            if (err) {
-                console.error("- Write error: " + err);
-            } else {
-                console.log("+ Wrote URL components to: " + theFilename);
-            }
-        });
-    }
     // res.statusCode = 200;
     // res.setHeader('Content-Type', 'text/plain');
     // res.send('+ Show GET.');
-    next();
+    // next();
 });
 
 // -----------------------------------------------------------------------------
@@ -235,7 +239,7 @@ app.get('/get', function (req, res) {
     res.send('+ Show GET.\n');
 });
 app.get('/send', function (req, res) {
-    var theMessage = "+ From tpfecho.";
+    var theMessage = "+ From tfpecho.";
     sendChatMessage(theMessage);
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
@@ -252,7 +256,7 @@ app.get('/read', function (req, res) {
             // console.log(data.toString());
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            res.send('+ File content:\n\r' + data.toString());
+            res.send('+ File content:\n' + data.toString());
         }
     });
 });

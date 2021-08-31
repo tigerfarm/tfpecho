@@ -1,13 +1,13 @@
 # HTTP Web Application to HTTP Echo Request Information
 
-Sample, use the curl command to send the following:
+Sample, use the curl command to make an HTTP request with parameters:
 ````
 curl -X POST https://echo.example.com/Executions \
 --data-urlencode "From=+16505551111" \
 --data-urlencode "To=+16505552222" \
 -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
 ````
-That following will show up in the Conversations application, conversation ftpecho.
+The following shows up in the Conversations application, conversation ftpecho.
 ````
 + Ready
 > tfpecho : tfpecho : ------------------------------------------------------

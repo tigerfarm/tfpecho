@@ -1,1 +1,17 @@
-+ URL components : GET /show ? EventType=onMessageAdded&Attributes=%7B%7D&DateCreated=2021-08-12T23:44:43.459Z&Index=26&MessageSid=IMa66d3a83e75d47e799e91d108c9d730a&AccountSid=ACae0e356ccba96d16d8d4f6f9518684a3&Source=SDK&ClientIdentity=dave2&RetryCount=0&Author=dave2&ParticipantSid=MB54907865d0eb407c8208e228dd6a4216&Body=this+one&ConversationSid=CHc97669141a784c92a74c296c84850d25
+--------------------------------------------------------------------------------------
+NaNPOST URL : https://localhost:3000/abc
+--------------
++ Headers : 
+++ 0: "host":"localhost:3000"
+++ 1: "authorization":"Basic QUNYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWDp5b3VyX2F1dGhfdG9rZW4y"
+++ 2: "user-agent":"curl/7.64.1"
+++ 3: "accept":"*/*"
+++ 4: "content-length":"38"
+++ 5: "content-type":"application/x-www-form-urlencoded"
+--------------
++ POST content raw : 
+From=%2B16505551111&To=%2B16505552222x
++ POST content name value pairs: 
+++ From: +16505551111
+++ To: +16505552222x
+--------------
