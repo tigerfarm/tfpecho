@@ -148,7 +148,7 @@ app.post('*', function (request, res) {
                 + '--------------\n'
                 + '+ Headers : \n' + theHeaders
                 + '--------------\n'
-                + '+ POST content raw : \n' + theData
+                + '+ POST content raw : \n' + theData + '\n'
                 + '+ POST content name value pairs: \n' + thePairMessages
                 + '--------------\n'
                 );
