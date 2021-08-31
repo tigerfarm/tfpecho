@@ -173,7 +173,7 @@ var theUrl = '';
 var theQueryString = '';
 app.get('*', function (request, res, next) {
     theUrl = url.parse(request.url).pathname;
-    if (theUrl.startsWith("/website") || theUrl === '/read') {
+    if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
         // Website files are for the browser, no need to echo the request data.
         console.log("> website: " + theUrl);
         next();
@@ -222,9 +222,10 @@ app.get('*', function (request, res, next) {
 // -----------------------------------------------------------------------------
 // Process GET requests such as requests from a browser.
 // 
-// app.get('/', function (req, res) {
-//    res.send('+ Home URI.');
-// });
+app.get('/', function (req, res) {
+    // res.send('+ Home URI.');
+    res.redirect('/website/index.html');
+});
 app.get('/hello', function (req, res) {
     res.send('+ hello there.');
 });
