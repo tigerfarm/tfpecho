@@ -11,6 +11,20 @@
 //  
 // Run the web server. Default port is hardcoded to 8000.
 //  $ node websever.js
+//  
+//  For testing:
+//  curl -X POST https://tfpecho.herokuapp.com/Executions \
+//  --data-urlencode "From=+16505551111" \
+//  --data-urlencode "To=+16505552222" \
+//  -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
+//  
+//  curl -X POST http://localhost:3000/abc \
+//  --data-urlencode "From=+16505551111" \
+//  --data-urlencode "To=+16505552222" \
+//  -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
+//  
+//  curl -X GET 'https://tfpecho.herokuapp.com/abc?f1=abc&f2=def'
+//  curl -X GET 'http://localhost:3000/abc'
 // 
 // -----------------------------------------------------------------------------
 console.log("+++ HTTP Echo Application web server starting up.");
