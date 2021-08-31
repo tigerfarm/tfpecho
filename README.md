@@ -1,6 +1,42 @@
 # HTTP Web Application to HTTP Echo Request Information
 
+Sample, use the curl command to send the following:
+````
+curl -X POST https://tfpecho.herokuapp.com//Executions \
+--data-urlencode "From=+16505551111" \
+--data-urlencode "To=+16505552222" \
+-u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
+````
+That following will show up in the Conversations application, conversation ftpecho.
+````
++ Ready
+> tfpecho : tfpecho : ------------------------------------------------------
++ POST URL : https://tfpecho.herokuapp.com//Executions
+--------------
++ Headers : 
+++ 0: "host":"tfpecho.herokuapp.com"
+++ 1: "connection":"close"
+++ 2: "authorization":"Basic QUNYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWDp5b3VyX2F1dGhfdG9rZW4="
+++ 3: "user-agent":"curl/7.64.1"
+++ 4: "accept":"*/*"
+++ 5: "content-type":"application/x-www-form-urlencoded"
+++ 6: "x-request-id":"7e3cdd72-ff4c-4a7d-82c2-f48f53abff8b"
+++ 7: "x-forwarded-for":"107.22.192.239"
+++ 8: "x-forwarded-proto":"https"
+++ 9: "x-forwarded-port":"443"
+++ 10: "via":"1.1 vegur"
+++ 11: "connect-time":"2"
+++ 12: "x-request-start":"1630372414626"
+++ 13: "total-route-time":"0"
+++ 14: "content-length":"37"
+--------------
++ POST content : 
+++ From: +16505551111
+++ To: +16505552222
+--------------
+````
 
+--------------------------------------------------------------------------------
 Sample Twilio Conversations HTTP request to my echo server.
 ````
 2021-08-10T18:00:58.254181+00:00 app[web.1]: + POST HTTP headers, count = 16:
