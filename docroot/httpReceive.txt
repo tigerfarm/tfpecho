@@ -1,22 +1,15 @@
 --------------------------------------------------------------------------------------
-NaNGET /
++ URL components : GET /abc
 + Headers : 
-++ 0: "host":"localhost:3000"
-++ 1: "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0"
-++ 2: "accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
-++ 3: "accept-language":"en-US,en;q=0.5"
-++ 4: "accept-encoding":"gzip, deflate"
+++ 0: "cache-control":"no-cache"
+++ 1: "pragma":"no-cache"
+++ 2: "user-agent":"Java/16.0.1"
+++ 3: "host":"localhost:3000"
+++ 4: "accept":"text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2"
 ++ 5: "connection":"keep-alive"
-++ 6: "upgrade-insecure-requests":"1"
-++ 7: "sec-fetch-dest":"document"
-++ 8: "sec-fetch-mode":"navigate"
-++ 9: "sec-fetch-site":"none"
-++ 10: "sec-fetch-user":"?1"
-++ 11: "if-modified-since":"Tue, 31 Aug 2021 15:59:52 GMT"
-++ 12: "if-none-match":"W/\"91b-17b9cf033e5\""
 
 --------------
-+ GET URL : https://localhost:3000/?null
++ GET URL : https://localhost:3000/abc
 --------------
 + GET content name-value pairs : 
 --------------

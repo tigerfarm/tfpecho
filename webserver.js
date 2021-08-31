@@ -119,6 +119,7 @@ app.post('*', function (request, res) {
         console.log("++ On data :" + data + ":");
         theData += data;
     });
+    let theRequest = "";
     request.on('end', function () {
         var thePairMessages = '';
         console.log("+ theData :" + theData + ":");
@@ -150,9 +151,10 @@ app.post('*', function (request, res) {
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         }
+        theRequest = request.method + ' URL : https://' + requestHost + url.parse(request.url).pathname;
         sendChatMessage(
                 // + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
-                + '+ ' + request.method + ' URL : https://' + requestHost + url.parse(request.url).pathname + "\n"
+                '+ ' + theRequest + "\n"
                 + '--------------\n'
                 + '+ Headers : \n' + theHeaders
                 + '--------------\n'
@@ -160,10 +162,11 @@ app.post('*', function (request, res) {
                 + '+ POST content name value pairs: \n' + thePairMessages
                 + '--------------\n'
                 );
+        res.statusCode = 201;
+        res.setHeader('Content-Type', 'text/plain');
+        res.send('+ Request processed: ' + theRequest + '\n');
+        console.log('----------------------------\n+ Request processed: ' + theRequest);
     });
-    res.statusCode = 201;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show POST.\n');
 });
 
 // -----------------------------------------------------------------------------
@@ -192,6 +195,7 @@ app.get('*', function (request, res, next) {
     var urlComponentMessage = '';
     if (theQueryString === null) {
         urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl;
+        theQueryString = "";
     } else {
         urlComponentMessage = '+ URL components : ' + request.method + ' ' + theUrl + " ? " + theQueryString;
         var thePairs = theQueryString.split("&");
@@ -202,21 +206,23 @@ app.get('*', function (request, res, next) {
             console.log(thePairMessage);
             thePairMessages = thePairMessages + thePairMessage + "\n";
         }
+        theQueryString = "?" + theQueryString;
     }
     console.log(urlComponentMessage);
     sendChatMessage(
-            + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
+            '+ URL components : ' + request.method + ' ' + theUrl + "\n"
             + '+ Headers : \n' + theHeaders + "\n"
             + '--------------\n'
-            + '+ GET URL : https://' + requestHost + theUrl + "?" + theQueryString + "\n"
+            + '+ GET URL : https://' + requestHost + theUrl + theQueryString + "\n"
             + '--------------\n'
             + '+ GET content name-value pairs : \n' + thePairMessages
             + '--------------\n'
             );
+    console.log('----------------------------\n+ Request processed: GET URL : https://' + requestHost + theUrl);
     // res.statusCode = 200;
     // res.setHeader('Content-Type', 'text/plain');
     // res.send('+ Show GET.');
-    // next();
+    next();
 });
 
 // -----------------------------------------------------------------------------
@@ -260,6 +266,12 @@ app.get('/read', function (req, res) {
             res.send('+ File content:\n' + data.toString());
         }
     });
+});
+
+app.get('*', function (request, res, next) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('+ Request processed by tfpecho.\n');
 });
 
 // -----------------------------------------------------------------------------
