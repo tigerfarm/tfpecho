@@ -269,6 +269,13 @@ app.get('/read', function (req, res) {
 });
 
 app.get('*', function (request, res, next) {
+    theUrl = url.parse(request.url).pathname;
+    if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
+        // Website files are for the browser, no need to echo the request data.
+        console.log("> website: " + theUrl);
+        next();
+        return;
+    }
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.send('+ Request processed by tfpecho.\n');
