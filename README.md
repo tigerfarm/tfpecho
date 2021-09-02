@@ -1,5 +1,11 @@
 # HTTP Web Application to HTTP Echo Request Information
 
+Echo HTTP request data by writing it to a file and optionally sending it as a Conversations message.
+
+Client Application screen print:
+
+<img src="clientapp.jpg" width="400"/>
+
 Sample, use the curl command to make an HTTP request with parameters:
 ````
 curl -X POST https://echo.example.com/Executions \
