@@ -1,10 +1,24 @@
 # HTTP Web Application to HTTP Echo Request Information
 
-Echo HTTP request data by writing it to a file and optionally sending it as a Conversations message.
+Write HTTP request data to a file and optionally sending it as a Conversations message.
+The TfpEcho application client has an option to read and display what was written to the file.
 
 Client Application screen print:
 
 <img src="clientapp.jpg" width="400"/>
+
+If you have an Heroku account, click the following to deploy this web application,
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/tigerfarm/tfpecho)
+
+When you deploy to Heroku, you will be prompted for an app name. 
+The name needs to be unique. Example, use your name+hero (example: davidhero). 
+Click Deploy app. Once the application is deployed, click Manage app. 
+Set Heroku project environment variables by clicking Settings. 
+Click Reveal Config Vars. Add the following key value pair:
+````
+TOKEN_HOST=your_Twilio_Functions_runtime_domain (example: about-time-1235.twil.io)
+````
 
 Sample, use the curl command to make an HTTP request with parameters:
 ````
