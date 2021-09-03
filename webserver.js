@@ -4,9 +4,11 @@
 // Easy to use.
 // Install modules.
 //  $ npm install --save express
-//  $ npm install --save express
 //  $ npm install --save request
+//  $ npm install --save url
 //  $ npm install --save fs
+//  
+//  "twilio" is only required if sending a Conversations message is implemented.
 //  $ npm install --save twilio
 //  
 // Run the web server. Default port is hardcoded to 8000.
@@ -24,6 +26,7 @@
 //  -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
 //  
 //  curl -X GET 'https://tfpecho.herokuapp.com/abc?f1=abc&f2=def'
+//  curl -X GET 'http://localhost:3000/abc?f1=abc&f2=def'
 //  curl -X GET 'http://localhost:3000/abc'
 // 
 // -----------------------------------------------------------------------------
@@ -49,33 +52,24 @@ const express = require('express');
 var app = express();
 app.use(express.json());
 //
+/*
 const client = require('twilio')(process.env.CONVERSATIONS_ACCOUNT_SID, process.env.CONVERSATIONS_ACCOUNT_AUTH_TOKEN);
+const serviceSid = process.env.CONVERSATIONS_ECHO_SERVICE_SID;
 const conversationSid = process.env.CONVERSATIONS_ECHO_SID;
 const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
+*/
 
 // -----------------------------------------------------------------------------
 // When deploying to Heroku, must use the keyword, "PORT".
 // This allows Heroku to override the value and use port 80. And when running locally can use other ports.
 const PORT = process.env.PORT || 3000;
 
-
 // -----------------------------------------------------------------------------
 // Send a Conversations chat message that a client can monitor.
 
-function sendChatMessage(theMessage) {
+function echoMessage(theMessage) {
+    // Write the echo message to echo file.
     var theSendMessage = '--------------------------------------------------------------------------------------\n' + theMessage;
-    console.log("++ Create a text message for a Conversation.");
-    console.log("+ Conversation SID: " + conversationSid
-            + " Participant Identity: " + participantIdentity
-            + " messageText: " + theSendMessage
-            );
-    client.conversations.conversations(conversationSid)
-            .messages
-            .create({author: participantIdentity, body: theMessage})
-            .then(message => console.log(
-                        "+ Created message, SID: " + message.sid
-                        ));
-    // Also, write the message to echo file.
     fs.writeFile(theFilename, theSendMessage, err => {
         if (err) {
             console.error("- Write error: " + err);
@@ -83,6 +77,23 @@ function sendChatMessage(theMessage) {
             console.log("+ Wrote URL components to: " + theFilename);
         }
     });
+    /*
+    if (serviceSid === "") {
+        // Don't attempt to send a message if the conversations service SID doesn't have a value.
+        return;
+    }
+    console.log("++ Create a text message for a Conversation.");
+    console.log("+ Conversation SID: " + conversationSid
+            + " Participant Identity: " + participantIdentity
+            + " messageText: " + theSendMessage
+            );
+    client.conversations.services(serviceSid).conversations(conversationSid)
+            .messages
+            .create({author: participantIdentity, body: theMessage})
+            .then(message => console.log(
+                        "+ Created message, SID: " + message.sid
+                        ));
+     */
 }
 
 // -----------------------------------------------------------------------------
@@ -166,7 +177,7 @@ app.post('*', function (request, res) {
             }
         }
         theRequest = request.method + ' URL : https://' + requestHost + url.parse(request.url).pathname;
-        sendChatMessage(
+        echoMessage(
                 // + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
                 '+ ' + theRequest + "\n"
                 + '--------------\n'
@@ -189,6 +200,7 @@ app.post('*', function (request, res) {
 var theUrl = '';
 var theQueryString = '';
 app.get('*', function (request, res, next) {
+    console.log("+ GET request.");
     theUrl = url.parse(request.url).pathname;
     if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
         // Website files are for the browser, no need to echo the request data.
@@ -223,7 +235,7 @@ app.get('*', function (request, res, next) {
         theQueryString = "?" + theQueryString;
     }
     console.log(urlComponentMessage);
-    sendChatMessage(
+    echoMessage(
             '+ URL components : ' + request.method + ' ' + theUrl + "\n"
             + '+ Headers : \n' + theHeaders + "\n"
             + '--------------\n'
@@ -246,6 +258,7 @@ app.get('/', function (req, res) {
     // res.send('+ Home URI.');
     res.redirect('/website/index.html');
 });
+/*  For testing.
 app.get('/hello', function (req, res) {
     res.send('+ hello there.');
 });
@@ -254,18 +267,15 @@ app.get('/show', function (req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.send('+ Show GET.\n');
 });
-app.get('/get', function (req, res) {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show GET.\n');
-});
+/*  For testing the sending of a conversation message.
 app.get('/send', function (req, res) {
     var theMessage = "+ From tfpecho.";
-    sendChatMessage(theMessage);
+    echoMessage(theMessage);
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.send('+ Sent message: ' + theMessage);
 });
+ */
 app.get('/read', function (req, res) {
     fs.readFile(theFilename, function (err, data) {
         if (err) {
