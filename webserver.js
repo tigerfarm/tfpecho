@@ -52,12 +52,48 @@ const express = require('express');
 var app = express();
 app.use(express.json());
 //
-/*
-const client = require('twilio')(process.env.CONVERSATIONS_ACCOUNT_SID, process.env.CONVERSATIONS_ACCOUNT_AUTH_TOKEN);
-const serviceSid = process.env.CONVERSATIONS_ECHO_SERVICE_SID;
-const conversationSid = process.env.CONVERSATIONS_ECHO_SID;
-const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
-*/
+var sendConversationMessage = "";
+const taSid = process.env.CONVERSATIONS_ACCOUNT_SID || "";
+const taat = process.env.CONVERSATIONS_ACCOUNT_AUTH_TOKEN || "";
+const serviceSid = process.env.CONVERSATIONS_ECHO_SERVICE_SID || "";
+const conversationSid = process.env.CONVERSATIONS_ECHO_SID || "";
+const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR || "";
+var allDefined = true;
+if (taSid !== "") {
+    console.log("+ taSid: " + taSid);
+} else {
+    console.log("+ Cannot send conversation messages because CONVERSATIONS_ACCOUNT_SIDX is undefined.");
+    allDefined = false;
+}
+if (taat !== "") {
+    console.log("+ taat is defined, not echoed for security reasons.");
+} else {
+    console.log("+ Cannot send conversation messages because CONVERSATIONS_ECHO_AUTHOR is undefined.");
+    allDefined = false;
+}
+if (serviceSid !== "") {
+    console.log("+ serviceSid: " + serviceSid);
+} else {
+    console.log("+ Cannot send conversation messages because CONVERSATIONS_ECHO_SERVICE_SID is undefined.");
+    allDefined = false;
+}
+if (conversationSid !== "") {
+    console.log("+ conversationSid: " + conversationSid);
+} else {
+    console.log("+ Cannot send conversation messages because CONVERSATIONS_ECHO_SID is undefined.");
+    allDefined = false;
+}
+if (participantIdentity !== "") {
+    console.log("+ participantIdentity: " + participantIdentity);
+} else {
+    console.log("+ Cannot send conversation messages because CONVERSATIONS_ECHO_AUTHOR is undefined.");
+    allDefined = false;
+}
+var clientConversation = "";
+if (allDefined) {
+    clientConversation = require('twilio')(taSid, taat) || "";
+    console.log("++ Ready to send conversation messages.");
+}
 
 // -----------------------------------------------------------------------------
 // When deploying to Heroku, must use the keyword, "PORT".
@@ -65,7 +101,7 @@ const participantIdentity = process.env.CONVERSATIONS_ECHO_AUTHOR;
 const PORT = process.env.PORT || 3000;
 
 // -----------------------------------------------------------------------------
-// Send a Conversations chat message that a client can monitor.
+// Send a Conversations chat message that a clientConversation can monitor.
 
 function echoMessage(theMessage) {
     // Write the echo message to echo file.
@@ -77,9 +113,8 @@ function echoMessage(theMessage) {
             console.log("+ Wrote URL components to: " + theFilename);
         }
     });
-    /*
-    if (serviceSid === "") {
-        // Don't attempt to send a message if the conversations service SID doesn't have a value.
+    if (!allDefined) {
+        // Don't attempt to send a message if the conversation service parameters are not defined.
         return;
     }
     console.log("++ Create a text message for a Conversation.");
@@ -87,13 +122,12 @@ function echoMessage(theMessage) {
             + " Participant Identity: " + participantIdentity
             + " messageText: " + theSendMessage
             );
-    client.conversations.services(serviceSid).conversations(conversationSid)
+    clientConversation.conversations.services(serviceSid).conversations(conversationSid)
             .messages
             .create({author: participantIdentity, body: theMessage})
             .then(message => console.log(
                         "+ Created message, SID: " + message.sid
                         ));
-     */
 }
 
 // -----------------------------------------------------------------------------
@@ -259,22 +293,22 @@ app.get('/', function (req, res) {
     res.redirect('/website/index.html');
 });
 /*  For testing.
-app.get('/hello', function (req, res) {
-    res.send('+ hello there.');
-});
-app.get('/show', function (req, res) {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Show GET.\n');
-});
-/*  For testing the sending of a conversation message.
-app.get('/send', function (req, res) {
-    var theMessage = "+ From tfpecho.";
-    echoMessage(theMessage);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('+ Sent message: ' + theMessage);
-});
+ app.get('/hello', function (req, res) {
+ res.send('+ hello there.');
+ });
+ app.get('/show', function (req, res) {
+ res.statusCode = 200;
+ res.setHeader('Content-Type', 'text/plain');
+ res.send('+ Show GET.\n');
+ });
+ /*  For testing the sending of a conversation message.
+ app.get('/send', function (req, res) {
+ var theMessage = "+ From tfpecho.";
+ echoMessage(theMessage);
+ res.statusCode = 200;
+ res.setHeader('Content-Type', 'text/plain');
+ res.send('+ Sent message: ' + theMessage);
+ });
  */
 app.get('/read', function (req, res) {
     fs.readFile(theFilename, function (err, data) {
