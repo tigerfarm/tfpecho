@@ -228,7 +228,7 @@ app.post('*', function (request, res) {
                 es = aPair.indexOf("\"", 1);
                 ls = aPair.indexOf("------", 1);
                 // console.log('+ i = ' + i + " " + aPair);
-                thePairMessage = '   "' + aPair.substring(1, es) + '": "' + aPair.substring(es + 5, ls - 1) + '"';
+                thePairMessage = '   "' + aPair.substring(1, es) + '": "' + aPair.substring(es + 5, ls - 1) + '",';
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
@@ -238,7 +238,7 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '   "' + aPair[0] + '": "' + decodeURIComponent(aPair[1] + '"');
+                thePairMessage = '   "' + aPair[0] + '": "' + decodeURIComponent(aPair[1] + '",');
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
