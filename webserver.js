@@ -29,6 +29,7 @@
 //  curl -X GET 'http://localhost:3000/abc?f1=abc&f2=def'
 //  curl -X GET 'http://localhost:3000/abc'
 // 
+// curl -X POST http://localhost:3000/callbacks/crm?location=GetCustomersList --data-urlencode "f1=+okay"
 // -----------------------------------------------------------------------------
 console.log("+++ HTTP Echo Application web server starting up.");
 // -----------------------------------------------------------------------------
@@ -99,6 +100,9 @@ if (allDefined) {
 // When deploying to Heroku, must use the keyword, "PORT".
 // This allows Heroku to override the value and use port 80. And when running locally can use other ports.
 const PORT = process.env.PORT || 3000;
+
+var theUrl = '';
+var theQueryString = '';
 
 // -----------------------------------------------------------------------------
 // Send a Conversations chat message that a clientConversation can monitor.
@@ -174,11 +178,40 @@ app.post('*', function (request, res) {
     //
     console.log("---");
     let theData = "";
+    // POST without body data: method=POST path="/frontline6?location=GetCustomersList"
+    // ++ Header: "content-type":"application/json"
+    // ++ Header: "content-length":"803"
+    // ???
+    request.on('close', function () {
+        console.log("++ POST request close.");
+        // Processes the same as GET.
+        theUrl = url.parse(request.url).pathname;
+        theRequest = request.method + ' URL : https://' + requestHost + theUrl;
+        theQueryString = url.parse(request.url).query;
+        if (theUrl.startsWith("/callbacks/crm") && theQueryString.indexOf("GetCustomersList")>0) {
+            // http://localhost:3000/callbacks/crm?location=GetCustomersList
+            console.log("++ Frontline customer list request.");
+            res.statusCode = 201;
+            res.setHeader('Content-Type', 'application/json');
+            res.send('{"objects": {"customers": [ {"display_name": "John Keats here", "customer_id": "1" } ]}}');
+            // + Request processed: POST URL : https://7256-107-210-221-195.ngrok.io/frontline5?location=GetCustomersList
+            console.log('----------------------------\n+ Request, Frontline customer list request: ' + theRequest + "?" + theQueryString);
+            return;
+        }
+        res.statusCode = 201;
+        res.setHeader('Content-Type', 'text/plain');
+        res.send('+ Request processed: ' + theRequest + '\n');
+        console.log('----------------------------\n+ Request processed: ' + theRequest + "?" + theQueryString);
+    });
+    // 
+    // POST with body data
     request.on('data', function (data) {
         console.log("++ On data :" + data + ":");
         theData += data;
     });
     let theRequest = "";
+    /*
+    */
     request.on('end', function () {
         var thePairMessages = '';
         console.log("+ theData :" + theData + ":");
@@ -195,7 +228,7 @@ app.post('*', function (request, res) {
                 es = aPair.indexOf("\"", 1);
                 ls = aPair.indexOf("------", 1);
                 // console.log('+ i = ' + i + " " + aPair);
-                thePairMessage = '++ ' + aPair.substring(1, es) + ': ' + aPair.substring(es + 5, ls - 1);
+                thePairMessage = '   "' + aPair.substring(1, es) + '": "' + aPair.substring(es + 5, ls - 1) + '"';
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
@@ -226,13 +259,16 @@ app.post('*', function (request, res) {
         res.send('+ Request processed: ' + theRequest + '\n');
         console.log('----------------------------\n+ Request processed: ' + theRequest);
     });
+    // Options not used.
+    // request.on('finish', () => console.log('finish'))
+    // request.on('error', () => console.log('error'))
+    // request.on('readable', () => console.log('readable'))
+
 });
 
 // -----------------------------------------------------------------------------
 // Echo the GET request.
 
-var theUrl = '';
-var theQueryString = '';
 app.get('*', function (request, res, next) {
     console.log("+ GET request.");
     theUrl = url.parse(request.url).pathname;
