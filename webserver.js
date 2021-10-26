@@ -238,7 +238,7 @@ app.post('*', function (request, res) {
             theLength = thePairs.length;
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
-                thePairMessage = '++ ' + aPair[0] + ': ' + decodeURIComponent(aPair[1]);
+                thePairMessage = '   "' + aPair[0] + '": "' + decodeURIComponent(aPair[1] + '"');
                 console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
