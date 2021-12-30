@@ -1,8 +1,13 @@
 # HTTP Web Application to HTTP Echo Request Information
 
-Write HTTP request data to a file and optionally sending it as a Conversations message.
+The Node webserver, receives and processes HTTP requests.
+It writes the HTTP request data to a file and optionally sends the request data as a Twilio Conversations message.
 The TfpEcho application client has an option to read and display what was written to the file.
-
+````
+Deploy/run the application.
+From a web browser, call the default server URL, such as:
+   http://localhost:8000/ or https://myapp.example.com/
+````
 Client Application screen print:
 
 <img src="clientapp.jpg" width="400"/>
@@ -20,6 +25,7 @@ Click Reveal Config Vars. Add the following key value pair:
 TOKEN_HOST=your_Twilio_Functions_runtime_domain (example: about-time-1235.twil.io)
 ````
 
+--------------------------------------------------------------------------------
 Sample, use the curl command to make an HTTP request with parameters:
 ````
 curl -X POST https://echo.example.com/Executions \
@@ -27,7 +33,8 @@ curl -X POST https://echo.example.com/Executions \
 --data-urlencode "To=+16505552222" \
 -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
 ````
-The following shows up in the Conversations application, conversation ftpecho.
+
+The following shows up in the Conversations application, conversation tfpecho.
 ````
 + Ready
 > tfpecho : tfpecho : ------------------------------------------------------
