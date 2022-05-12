@@ -188,7 +188,7 @@ app.post('*', function (request, res) {
         theUrl = url.parse(request.url).pathname;
         theRequest = request.method + ' URL : https://' + requestHost + theUrl;
         theQueryString = url.parse(request.url).query;
-        if (theUrl.startsWith("/callbacks/crm") && theQueryString.indexOf("GetCustomersList")>0) {
+        if (theUrl.startsWith("/callbacks/crm") && theQueryString.indexOf("GetCustomersList") > 0) {
             // http://localhost:3000/callbacks/crm?location=GetCustomersList
             console.log("++ Frontline customer list request.");
             res.statusCode = 201;
@@ -211,7 +211,7 @@ app.post('*', function (request, res) {
     });
     let theRequest = "";
     /*
-    */
+     */
     request.on('end', function () {
         var thePairMessages = '';
         console.log("+ theData :" + theData + ":");
@@ -360,6 +360,13 @@ app.get('/read', function (req, res) {
             res.send('+ File content:\n' + data.toString());
         }
     });
+});
+
+app.get('/useridpassword', function (req, res) {
+    console.log("- Error: requires userid and password.");
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('- Error: requires userid and password.');
 });
 
 app.get('*', function (request, res, next) {

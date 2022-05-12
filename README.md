@@ -6,10 +6,9 @@ The TfpEcho application client has an option to read and display what was writte
 ````
 Deploy/run the application.
 From a web browser, call the default server URL, such as:
-   http://localhost:8000/ or https://myapp.example.com/
+   http://localhost:8000/ or https://echo.example.com/
+The TFP Echo Web Browser Client Application screen is displayed:
 ````
-Client Application screen print:
-
 <img src="clientapp.jpg" width="400"/>
 
 If you have an Heroku account, click the following to deploy this web application,
@@ -26,6 +25,11 @@ TOKEN_HOST=your_Twilio_Functions_runtime_domain (example: about-time-1235.twil.i
 ````
 
 --------------------------------------------------------------------------------
+### Test
+
+Make an HTTP request to the TFP echo server.
+Add a URI, such as "/Executions", to identify the request.
+
 Sample, use the curl command to make an HTTP request with parameters:
 ````
 curl -X POST https://echo.example.com/Executions \
@@ -33,6 +37,8 @@ curl -X POST https://echo.example.com/Executions \
 --data-urlencode "To=+16505552222" \
 -u "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_auth_token"
 ````
+
+From the TFP Echo Web Browser Client Application, click the Show echo data button.
 
 The following shows up in the Conversations application, conversation tfpecho.
 ````
