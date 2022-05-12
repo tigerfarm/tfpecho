@@ -371,10 +371,19 @@ app.get('/read', function (req, res) {
 });
 
 app.get('/useridpassword', function (req, res) {
+    /*
+     * https://www.twilio.com/docs/usage/security#http-authentication
+HTTP/1.1 401 UNAUTHORIZED
+WWW-Authenticate: Basic realm="My Realm"
+Date: Wed, 21 Jun 2017 01:14:36 GMT
+Content-Type: application/xml
+Content-Length: 327
+     */
     console.log("- GET Error: requires userid and password.");
     res.statusCode = 401;
-    res.setHeader('Content-Type', 'text/plain');
-    res.send('- GET Error: requires userid and password.');
+    res.setHeader('WWW-Authenticate: Basic realm="TfpRealm"');
+    res.setHeader('Content-Type', 'application/xml');
+    // res.send('- GET Error: requires userid and password.');
 });
 
 app.get('*', function (request, res, next) {
