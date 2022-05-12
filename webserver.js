@@ -269,6 +269,7 @@ app.post('*', function (request, res) {
 app.post('/useridpassword', function (req, res) {
     console.log("- POST Error: requires userid and password.");
     res.statusCode = 401;
+    res.setHeader('WWW-Authenticate: Basic realm="My Realm"');
     res.setHeader('Content-Type', 'text/plain');
     res.send('- POST Error: requires userid and password.');
 });
