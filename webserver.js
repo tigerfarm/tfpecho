@@ -169,6 +169,13 @@ function echoHeaders(theHeaders) {
 // -----------------------------------------------------------------------------
 // Echo the POST request.
 
+app.post('/useridpassword', function (req, res) {
+    console.log("- POST Error: requires userid and password.");
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('- POST Error: requires userid and password.');
+});
+
 app.post('*', function (request, res) {
     //
     console.log("------------------");
@@ -363,10 +370,10 @@ app.get('/read', function (req, res) {
 });
 
 app.get('/useridpassword', function (req, res) {
-    console.log("- Error: requires userid and password.");
+    console.log("- GET Error: requires userid and password.");
     res.statusCode = 401;
     res.setHeader('Content-Type', 'text/plain');
-    res.send('- Error: requires userid and password.');
+    res.send('- GET Error: requires userid and password.');
 });
 
 app.get('*', function (request, res, next) {
