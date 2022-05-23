@@ -16,7 +16,16 @@
 // Run the web server. Default port is hardcoded to 8000.
 //  $ node websever.js
 //  
-//  For testing:
+//  -----------------------------------------------------------------------------
+//  Sample requests:
+//  
+//  List the current saved echo.txt
+//      https://tfpecho.herokuapp.com/read
+// 
+//  Echo website application:
+//      https://tfpecho.herokuapp.com
+//      https://tfpecho.herokuapp.com/website/index.html
+//  
 //  curl -X POST https://tfpecho.herokuapp.com/Executions \
 //  --data-urlencode "From=+16505551111" \
 //  --data-urlencode "To=+16505552222" \
@@ -284,7 +293,7 @@ app.get('*', function (request, res, next) {
     theUrl = url.parse(request.url).pathname;
     if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
         // Website files are for the browser, no need to echo the request data.
-        console.log("> website: " + theUrl);
+        console.log("> website, 1: " + theUrl);
         next();
         return;
     }
@@ -392,9 +401,11 @@ app.get('*', function (request, res, next) {
     theUrl = url.parse(request.url).pathname;
     if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
         // Website files are for the browser, no need to echo the request data.
-        console.log("> website: " + theUrl);
+        console.log("> website, 2: " + theUrl);
         next();
         return;
+    } else if (theUrl.startsWith("/echoreply")) {
+        next();
     }
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
