@@ -405,7 +405,9 @@ app.get('*', function (request, res, next) {
         next();
         return;
     } else if (theUrl.startsWith("/echoreply")) {
+        console.log("> echoreply: " + theUrl);
         next();
+        return;
     }
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
