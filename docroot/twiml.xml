@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="alice" language="en-CA">Welcome to the machine. What do you want? Don't tell us, we already know what you want.</Say>
+</Response>

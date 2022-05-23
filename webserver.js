@@ -1,6 +1,8 @@
 // -----------------------------------------------------------------------------
 // Conversations Chat web server application
 // 
+// Check if it's possible to know if the incoming request is HTTP or HTTPS.
+// 
 // Easy to use.
 // Install modules.
 //  $ npm install --save express
