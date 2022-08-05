@@ -19,12 +19,15 @@
 //  -----------------------------------------------------------------------------
 //  Sample requests:
 //  
-//  List the current saved echo.txt
+//  List the current saved text file, variable: theFilename
 //      https://tfpecho.herokuapp.com/read
 // 
 //  Echo website application:
 //      https://tfpecho.herokuapp.com
 //      https://tfpecho.herokuapp.com/website/index.html
+//      
+//  Echo the headers and content, and respond with the file.
+//      https://tfpecho.herokuapp.com/echoreply/twiml.xml
 //  
 //  curl -X POST https://tfpecho.herokuapp.com/Executions \
 //  --data-urlencode "From=+16505551111" \
@@ -116,10 +119,12 @@ var theUrl = '';
 var theQueryString = '';
 
 // -----------------------------------------------------------------------------
-// Send a Conversations chat message that a clientConversation can monitor.
+// + Write the HTTP request data to a file.
+// + Add a Conversations message with the HTTP request data, to monitor a sequence of HTTP requests.
 
 function echoMessage(theMessage) {
-    // Write the echo message to echo file.
+    // ---------------------------------
+    console.log("++ Write the echo message to echo file.");
     var theSendMessage = '--------------------------------------------------------------------------------------\n' + theMessage;
     fs.writeFile(theFilename, theSendMessage, err => {
         if (err) {
@@ -128,14 +133,15 @@ function echoMessage(theMessage) {
             console.log("+ Wrote URL components to: " + theFilename);
         }
     });
+    // ---------------------------------
     if (!allDefined) {
-        // Don't attempt to send a message if the conversation service parameters are not defined.
+        // Don't add a conversation message if the conversation service parameters are not defined.
         return;
     }
-    console.log("++ Create a text message for a Conversation.");
-    console.log("+ Conversation SID: " + conversationSid
+    console.log("++ Added Twilio Conversations message,"
+            // + " conversation SID: " + conversationSid
             + " Participant Identity: " + participantIdentity
-            + " messageText: " + theSendMessage
+            // + " messageText: " + theSendMessage
             );
     clientConversation.conversations.services(serviceSid).conversations(conversationSid)
             .messages
@@ -150,12 +156,13 @@ function echoMessage(theMessage) {
 var requestHost = "";
 
 function echoHeaders(theHeaders) {
+    // console.log("+ echoHeaders(...) -" + theHeaders + "-");
     var theLength = theHeaders.length;
     var headerlist = '';
     for (var i = 0; i < theLength; i++) {
         var theHeaderString = theHeaders[i];
         var aMessage = '';
-        // console.log('+ i = ' + i + " " + theHeaderString);
+        // console.log('+ i = ' + i + " -" + theHeaderString + "-");
         if (i === 0) {
             aMessage = '++ ' + i + ": " + theHeaderString.substring(1, theHeaderString.length) + '"';
             console.log(aMessage);
@@ -170,9 +177,11 @@ function echoHeaders(theHeaders) {
         //
         // Set the host variable.
         // ++ 0: "host":"02b26d8de5bd.ngrok.io"
+        // ++ 2: "host":"localhost:3000"
         var hi = theHeaderString.indexOf('host":"');
-        if (hi > 0) {
+        if (hi >= 0) {
             requestHost = theHeaderString.substring(hi + 'host":"'.length, theHeaderString.length);
+            // console.log("+++ Set requestHost: " + requestHost);
         }
     }
     return(headerlist);
@@ -181,22 +190,38 @@ function echoHeaders(theHeaders) {
 // Echo the POST request.
 
 app.post('*', function (request, res) {
-    //
-    console.log("------------------");
+    console.log("------------------------------------------------------");
+    console.log("+ POST request.");
     var theHeaders = JSON.stringify(request.headers).split('","');
-    console.log("+ POST HTTP headers, count = " + theHeaders.length + ":");
+    console.log("+ Headers, count = " + theHeaders.length + ":");
     theHeaders = echoHeaders(theHeaders);
+    theUrl = url.parse(request.url).pathname;
     //
     console.log("---");
     let theData = "";
+    let requestOnEnd = false;
+    //
     // POST without body data: method=POST path="/frontline6?location=GetCustomersList"
     // ++ Header: "content-type":"application/json"
     // ++ Header: "content-length":"803"
     // ???
+    // 
+    // POST with body data
+    request.on('data', function (data) {
+        console.log("++ Request on data.");
+        // console.log("++ On data :" + data + ":");
+        theData += data;
+    });
+    let theRequest = "";
+    /* -------------------------------------------------------------------------
+     */
     request.on('close', function () {
-        console.log("++ POST request close.");
+        console.log("++ Request on close. POST request close.");
+        if (requestOnEnd) {
+            console.log("+ Request on end, has already sent the reply.");
+            return;
+        }
         // Processes the same as GET.
-        theUrl = url.parse(request.url).pathname;
         theRequest = request.method + ' URL : https://' + requestHost + theUrl;
         theQueryString = url.parse(request.url).query;
         if (theUrl.startsWith("/callbacks/crm") && theQueryString.indexOf("GetCustomersList") > 0) {
@@ -206,26 +231,21 @@ app.post('*', function (request, res) {
             res.setHeader('Content-Type', 'application/json');
             res.send('{"objects": {"customers": [ {"display_name": "John Keats here", "customer_id": "1" } ]}}');
             // + Request processed: POST URL : https://7256-107-210-221-195.ngrok.io/frontline5?location=GetCustomersList
-            console.log('----------------------------\n+ Request, Frontline customer list request: ' + theRequest + "?" + theQueryString);
+            // console.log('----------------------------\n+ Request, Frontline customer list request: ' + theRequest + "?" + theQueryString);
             return;
         }
         res.statusCode = 201;
         res.setHeader('Content-Type', 'text/plain');
         res.send('+ Request processed: ' + theRequest + '\n');
-        console.log('----------------------------\n+ Request processed: ' + theRequest + "?" + theQueryString);
+        // console.log('----------------------------\n+ Request processed: ' + theRequest + "?" + theQueryString);
     });
-    // 
-    // POST with body data
-    request.on('data', function (data) {
-        console.log("++ On data :" + data + ":");
-        theData += data;
-    });
-    let theRequest = "";
-    /*
+    /* -------------------------------------------------------------------------
      */
     request.on('end', function () {
+        console.log("++ Request on end.");
+        requestOnEnd = true;
         var thePairMessages = '';
-        console.log("+ theData :" + theData + ":");
+        // console.log("+ theData :" + theData + ":");
         if (theData.indexOf("Content-Disposition: form-data;") > 0) {
             // "content-type":"multipart/form-data; ..."
             // Content-Disposition: form-data; name="From"
@@ -240,7 +260,7 @@ app.post('*', function (request, res) {
                 ls = aPair.indexOf("------", 1);
                 // console.log('+ i = ' + i + " " + aPair);
                 thePairMessage = '   "' + aPair.substring(1, es) + '": "' + aPair.substring(es + 5, ls - 1) + '",';
-                console.log(thePairMessage);
+                // console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         } else {
@@ -250,31 +270,32 @@ app.post('*', function (request, res) {
             for (var i = 0; i < theLength; i++) {
                 aPair = thePairs[i].split("=");
                 thePairMessage = '   "' + aPair[0] + '": "' + decodeURIComponent(aPair[1] + '",');
-                console.log(thePairMessage);
+                // console.log(thePairMessage);
                 thePairMessages = thePairMessages + thePairMessage + "\n";
             }
         }
-        theRequest = request.method + ' URL : https://' + requestHost + url.parse(request.url).pathname;
+        theRequest = request.method + ' URL : https://' + requestHost + theUrl;
         echoMessage(
                 // + '+ URL components : ' + request.method + ' ' + theUrl + "\n"
                 '+ ' + theRequest + "\n"
+                // + '+ The URL : https://' + requestHost + theUrl + "\n"
                 + '--------------\n'
-                + '+ Headers : \n' + theHeaders
-                + '--------------\n'
-                + '+ POST content raw : \n' + theData + '\n'
-                + '+ POST content name value pairs: \n' + thePairMessages
+                + '+ Headers:\n' + theHeaders
+                + 'POST Content ---------------------------------\n'
+                + '+ Raw : \n' + theData + '\n'
+                + 'POST Content ---------------------------------\n'
+                + '+ Name value pairs: \n' + thePairMessages
                 + '--------------\n'
                 );
         res.statusCode = 201;
         res.setHeader('Content-Type', 'text/plain');
         res.send('+ Request processed: ' + theRequest + '\n');
-        console.log('----------------------------\n+ Request processed: ' + theRequest);
+        // console.log('----------------------------\n+ Request processed: ' + theRequest);
     });
     // Options not used.
-    // request.on('finish', () => console.log('finish'))
-    // request.on('error', () => console.log('error'))
-    // request.on('readable', () => console.log('readable'))
-
+    request.on('finish', () => console.log('finish'));
+    request.on('error', () => console.log('error'));
+    // request.on('readable', () => console.log('readable'));
 });
 
 app.post('/useridpassword', function (req, res) {
@@ -289,6 +310,7 @@ app.post('/useridpassword', function (req, res) {
 // Echo the GET request.
 
 app.get('*', function (request, res, next) {
+    console.log("------------------------------------------------------");
     console.log("+ GET request.");
     theUrl = url.parse(request.url).pathname;
     if (theUrl.startsWith("/website") || theUrl === '/read' || theUrl === '/') {
@@ -298,7 +320,6 @@ app.get('*', function (request, res, next) {
         return;
     }
     //
-    console.log("------------------");
     // console.log(">" + JSON.stringify(request.headers) + "<");
     var theHeaders = JSON.stringify(request.headers).split('","');
     console.log("+ GET HTTP headers, count = " + theHeaders.length + ":");
@@ -318,17 +339,18 @@ app.get('*', function (request, res, next) {
         for (var i = 0; i < theLength; i++) {
             aPair = thePairs[i].split("=");
             thePairMessage = '++ ' + aPair[0] + ': ' + decodeURIComponent(aPair[1]);
-            console.log(thePairMessage);
+            // console.log(thePairMessage);
             thePairMessages = thePairMessages + thePairMessage + "\n";
         }
         theQueryString = "?" + theQueryString;
     }
-    console.log(urlComponentMessage);
+    // console.log(urlComponentMessage);
     echoMessage(
             '+ URL components : ' + request.method + ' ' + theUrl + "\n"
-            + '+ Headers : \n' + theHeaders + "\n"
+            + '+ The URL : https://' + requestHost + theUrl + "\n"
+            + '+ Headers : \n' + theHeaders
             + '--------------\n'
-            + '+ GET URL : https://' + requestHost + theUrl + theQueryString + "\n"
+            + '+ GET URL query string: ' + theQueryString + "\n"
             + '--------------\n'
             + '+ GET content name-value pairs : \n' + thePairMessages
             + '--------------\n'
@@ -368,15 +390,29 @@ app.get('/', function (req, res) {
 app.get('/read', function (req, res) {
     fs.readFile(theFilename, function (err, data) {
         if (err) {
-            console.log("- Error: read file NOT found.");
+            console.log("- Error: file NOT found.");
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
-            res.send('- Error: read file NOT found.');
+            res.send('- Error: file NOT found.');
         } else {
             // console.log(data.toString());
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
             res.send('+ File content:\n' + data.toString());
+        }
+    });
+});
+app.get('/fileremove', function (req, res) {
+    fs.rm(theFilename, function (err, data) {
+        if (err) {
+            console.log("- Error: file NOT found.");
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.send('- Error: file NOT found.');
+        } else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.send('+ File removed: ' + theFilename);
         }
     });
 });
