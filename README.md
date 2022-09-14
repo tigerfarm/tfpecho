@@ -23,6 +23,15 @@ Click Reveal Config Vars. Add the following key value pair:
 ````
 TOKEN_HOST=your_Twilio_Functions_runtime_domain (example: about-time-1235.twil.io)
 ````
+--------------------------------------------------------------------------------
+### To DO
+
+Currently, a process notice is responded.
+Add an option to respond with SMS no response XML.
+This will allow using in a Twilio phone number configuration and not causing a endless reply loop.
+````
+<?xml version="1.0" encoding="UTF-8"?><Response></Response>
+````
 
 --------------------------------------------------------------------------------
 ### Test
@@ -30,7 +39,42 @@ TOKEN_HOST=your_Twilio_Functions_runtime_domain (example: about-time-1235.twil.i
 Make an HTTP request to the TFP echo server.
 Add a URI, such as "/Executions", to identify the request.
 
-Sample, use the curl command to make an HTTP request with parameters:
+Sample HTTP GET, use the curl command to make an HTTP request with parameters:
+````
+curl -X GET https://echo.example.com/getthis?f1=abc&f2=def
+````
+From the TFP Echo Web Browser Client Application, click the Show echo data button.
+
+The following shows up in the Conversations application, conversation tfpecho.
+````
++ Ready
++ File content:
+--------------------------------------------------------------------------------------
++ URL components : GET /getthis
++ The URL : https://tfpecho.herokuapp.com/getthis
++ Headers : 
+++ 0: "host":"tfpecho.herokuapp.com"
+++ 1: "connection":"close"
+++ 2: "user-agent":"curl/7.77.0"
+++ 3: "accept":"*/*"
+++ 4: "x-request-id":"f3accbbd-1e84-472e-b73b-80a969d65cbf"
+++ 5: "x-forwarded-for":"107.210.221.195"
+++ 6: "x-forwarded-proto":"https"
+++ 7: "x-forwarded-port":"443"
+++ 8: "via":"1.1 vegur"
+++ 9: "connect-time":"0"
+++ 10: "x-request-start":"1663173139024"
+++ 11: "total-route-time":"0"
+--------------
++ GET URL query string: ?f1=abc
+--------------
++ GET content name-value pairs : 
+++ f1: abc
+--------------
+````
+
+--------------------------------------------------------------------------------
+Sample HTTP POST, use the curl command to make an HTTP request with parameters:
 ````
 curl -X POST https://echo.example.com/Executions \
 --data-urlencode "From=+16505551111" \
@@ -43,31 +87,33 @@ From the TFP Echo Web Browser Client Application, click the Show echo data butto
 The following shows up in the Conversations application, conversation tfpecho.
 ````
 + Ready
-> tfpecho : tfpecho : ------------------------------------------------------
++ File content:
+--------------------------------------------------------------------------------------
 + POST URL : https://echo.example.com/Executions
 --------------
-+ Headers : 
-++ 0: "host":"echo.example.com"
++ Headers:
+++ 0: "host":"tfpecho.herokuapp.com"
 ++ 1: "connection":"close"
 ++ 2: "authorization":"Basic QUNYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWDp5b3VyX2F1dGhfdG9rZW4="
-++ 3: "user-agent":"curl/7.64.1"
+++ 3: "user-agent":"curl/7.77.0"
 ++ 4: "accept":"*/*"
 ++ 5: "content-type":"application/x-www-form-urlencoded"
-++ 6: "x-request-id":"e73e58f3-04eb-49e0-b03f-74b79d19bc9c"
-++ 7: "x-forwarded-for":"107.22.192.239"
+++ 6: "x-request-id":"a7ec7de7-f125-457b-a475-05cdaa1dc3de"
+++ 7: "x-forwarded-for":"107.210.221.195"
 ++ 8: "x-forwarded-proto":"https"
 ++ 9: "x-forwarded-port":"443"
 ++ 10: "via":"1.1 vegur"
 ++ 11: "connect-time":"0"
-++ 12: "x-request-start":"1630373372709"
-++ 13: "total-route-time":"2"
+++ 12: "x-request-start":"1663172975159"
+++ 13: "total-route-time":"0"
 ++ 14: "content-length":"37"
---------------
-+ POST content raw : 
+POST Content ---------------------------------
++ Raw : 
 From=%2B16505551111&To=%2B16505552222
-+ POST content name value pairs: 
-++ From: +16505551111
-++ To: +16505552222
+POST Content ---------------------------------
++ Name value pairs: 
+   "From": "+16505551111",
+   "To": "+16505552222",
 --------------
 ````
 

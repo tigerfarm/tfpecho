@@ -1,24 +1,23 @@
 --------------------------------------------------------------------------------------
-+ URL components : GET /get
-+ The URL : https://localhost:3000/get
++ URL components : GET /test
++ The URL : https://localhost:3000/test
 + Headers : 
 ++ 0: "host":"localhost:3000"
-++ 1: "connection":"close"
+++ 1: "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:103.0) Gecko/20100101 Firefox/103.0"
+++ 2: "accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+++ 3: "accept-language":"en-US,en;q=0.5"
+++ 4: "accept-encoding":"gzip, deflate, br"
+++ 5: "connection":"keep-alive"
+++ 6: "upgrade-insecure-requests":"1"
+++ 7: "sec-fetch-dest":"document"
+++ 8: "sec-fetch-mode":"navigate"
+++ 9: "sec-fetch-site":"none"
+++ 10: "sec-fetch-user":"?1"
 --------------
-+ GET URL query string: ?EventType=onMessageAdded&Attributes=%7B%7D&DateCreated=2021-08-11T17%3A30%3A55.860Z&Index=38&MessageSid=IM9d9dd049fd494746a24945dfbcc1ec5e&AccountSid=ACa---3&Source=SDK&ClientIdentity=dave2&RetryCount=0&Author=dave2&ParticipantSid=MBba977a9efe96481ca01c307812524d7e&Body=hi%20there&ConversationSid=CH6c25138e952448e3b27ef8164097a1c7
++ GET URL query string: ?To=John&From=Stacy&text=Hello2
 --------------
 + GET content name-value pairs : 
-++ EventType: onMessageAdded
-++ Attributes: {}
-++ DateCreated: 2021-08-11T17:30:55.860Z
-++ Index: 38
-++ MessageSid: IM9d9dd049fd494746a24945dfbcc1ec5e
-++ AccountSid: ACa---3
-++ Source: SDK
-++ ClientIdentity: dave2
-++ RetryCount: 0
-++ Author: dave2
-++ ParticipantSid: MBba977a9efe96481ca01c307812524d7e
-++ Body: hi there
-++ ConversationSid: CH6c25138e952448e3b27ef8164097a1c7
+++ To: John
+++ From: Stacy
+++ text: Hello2
 --------------
