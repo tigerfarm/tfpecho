@@ -41,7 +41,7 @@ Add a URI, such as "/Executions", to identify the request.
 
 Sample HTTP GET, use the curl command to make an HTTP request with parameters:
 ````
-curl -X GET https://echo.example.com/getthis?f1=abc&f2=def
+curl -X GET "https://tfpecho.herokuapp.com/getthis?f1=abc&f2=def"
 ````
 From the TFP Echo Web Browser Client Application, click the Show echo data button.
 
@@ -57,19 +57,20 @@ The following shows up in the Conversations application, conversation tfpecho.
 ++ 1: "connection":"close"
 ++ 2: "user-agent":"curl/7.77.0"
 ++ 3: "accept":"*/*"
-++ 4: "x-request-id":"f3accbbd-1e84-472e-b73b-80a969d65cbf"
-++ 5: "x-forwarded-for":"107.210.221.195"
+++ 4: "x-request-id":"50cc8a1b-deec-43c3-bba0-bb097185500b"
+++ 5: "x-forwarded-for":"13.52.196.42"
 ++ 6: "x-forwarded-proto":"https"
 ++ 7: "x-forwarded-port":"443"
 ++ 8: "via":"1.1 vegur"
 ++ 9: "connect-time":"0"
-++ 10: "x-request-start":"1663173139024"
+++ 10: "x-request-start":"1663176288918"
 ++ 11: "total-route-time":"0"
 --------------
-+ GET URL query string: ?f1=abc
++ GET URL query string: ?f1=abc&f2=def
 --------------
 + GET content name-value pairs : 
 ++ f1: abc
+++ f2: def
 --------------
 ````
 
